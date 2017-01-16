@@ -1,6 +1,8 @@
+require File.expand_path('lib/calx_client/version', File.dirname(__FILE__))
+
 Gem::Specification.new do |s|
   s.name        = 'calx_client'
-  s.version     = '0.0.1'
+  s.version     = CalX::VERSION
   s.date        = '2016-12-09'
   s.summary     = 'CalX API Client'
   s.description = 'API client to access CalX events'
