@@ -67,10 +67,10 @@ module CalX
     def request(uri, request)
       signed_request = ApiAuth.sign!(request, @access_id, @secret_key)
       response = http(uri).request(signed_request)
-      parse_response(response)
+      parse_response(uri, response)
     end
 
-    def parse_response(response)
+    def parse_response(uri, response)
       case response
       when Net::HTTPNoContent
         :no_content
@@ -97,7 +97,7 @@ module CalX
 
     def error_response_message(response, uri)
       message = "#{response.code} response from #{uri.host}"
-      message + " | Response body: #{JSON.parse(response.body)}" if response.body.present?
+      message + " | Response body: #{JSON.parse(response.body)}" unless response.body.nil?
     end
 
     def http(uri)
