@@ -1,4 +1,4 @@
-require 'calx_client'
+require 'spec_helper'
 require 'api-auth'
 require 'webmock/rspec'
 
@@ -42,7 +42,7 @@ describe CalX::Client do
     end
   end
 
-  describe '#events' do
+  describe '#event' do
     let(:event_id) { '1' }
     let(:response_body) do
       { 'event_id' => event_id }
@@ -112,6 +112,63 @@ describe CalX::Client do
 
     it 'returns the deleted event' do
       expect(subject.delete_event(event_id)).to eq(response_body)
+    end
+  end
+
+  context 'error cases' do
+    let(:event_id) { 1 }
+
+    before do
+      stub_request(:get, "#{host}/events/#{event_id}").
+        to_return(body: '', status: status_code, headers: headers)
+    end
+
+    context 'HTTP no content' do
+      let(:status_code) { 204 }
+
+      it 'is no content' do
+        expect(subject.event(event_id)).to eq(:no_content)
+      end
+    end
+
+    context 'HTTP unauthorized' do
+      let(:status_code) { 401 }
+
+      it 'raises AuthenticationError' do
+        expect do
+          subject.event(event_id)
+        end.to raise_error(CalX::AuthenticationError)
+      end
+    end
+
+    context 'HTTP client error' do
+      let(:status_code) { 400 }
+
+      it 'raises ClientError' do
+        expect do
+          subject.event(event_id)
+        end.to raise_error(CalX::ClientError)
+      end
+    end
+
+    context 'HTTP server error' do
+      let(:status_code) { 500 }
+
+      it 'raises ServerError' do
+        expect do
+          subject.event(event_id)
+        end.to raise_error(CalX::ServerError)
+      end
+    end
+
+    context 'HTTP client error' do
+      let(:status_code) { 308 }
+
+      it 'raises Error' do
+        expect do
+          subject.event(event_id)
+        end.to raise_error(CalX::Error)
+      end
     end
   end
 end
