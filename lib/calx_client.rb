@@ -38,7 +38,7 @@ module CalX
     private
 
     def get(request_uri, params = {})
-      request_uri += "?#{encode_params(params)}" unless params.nil?
+      request_uri += "?#{encode_params(params)}" unless params.empty?
       uri = URI(@host + request_uri)
       request = Net::HTTP::Get.new(uri.request_uri)
       request(uri, request)
@@ -96,8 +96,7 @@ module CalX
     end
 
     def error_response_message(response, uri)
-      message = "#{response.code} response from #{uri.host}"
-      message + " | Response body: #{JSON.parse(response.body)}" unless response.body.nil?
+      "#{response.code} response from #{uri.host}"
     end
 
     def http(uri)

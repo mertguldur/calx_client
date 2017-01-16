@@ -40,6 +40,17 @@ describe CalX::Client do
     it 'returns the events' do
       expect(subject.events(user_id, date: date)).to eq(response_body)
     end
+
+    context 'no date parameter' do
+      before do
+        stub_request(:get, "#{host}/users/#{user_id}/events").
+          to_return(body: response_body.to_json, status: 200, headers: headers)
+      end
+
+      it 'returns the events' do
+        expect(subject.events(user_id)).to eq(response_body)
+      end
+    end
   end
 
   describe '#event' do
