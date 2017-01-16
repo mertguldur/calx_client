@@ -9,7 +9,10 @@ Gem::Specification.new do |s|
   s.files       = `git ls-files`.split("\n")
   s.license     = 'MIT'
 
-  s.add_development_dependency 'rake'
-
   s.add_dependency 'api-auth'
+
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'api-auth'
+  s.add_development_dependency 'webmock'
 end

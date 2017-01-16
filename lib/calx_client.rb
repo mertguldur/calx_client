@@ -12,7 +12,7 @@ module CalX
     end
 
     def authorize(user_id)
-      post("/authorize_app", user_id: user_id)
+      post("/app_authorization_requests", user_id: user_id)
     end
 
     def events(user_id, params = {})
@@ -38,7 +38,7 @@ module CalX
     private
 
     def get(request_uri, params = {})
-      request_uri += "?#{encode_params(params)}" if params.present?
+      request_uri += "?#{encode_params(params)}" unless params.nil?
       uri = URI(@host + request_uri)
       request = Net::HTTP::Get.new(uri.request_uri)
       request(uri, request)
