@@ -1,0 +1,26 @@
+AllCops:
+  TargetRubyVersion: 2.3
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Max: 15
+
+Style/Documentation:
+  Enabled: false
+
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/IfInsideElse:
+  Enabled: false
+
+Style/RaiseArgs:
+  EnforcedStyle: compact

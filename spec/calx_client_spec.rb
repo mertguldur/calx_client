@@ -33,7 +33,7 @@ describe CalX::Client do
 
     before do
       stub_request(:get, "#{host}/users/#{user_id}/events").
-        with(query: hash_including({ 'date' => date.to_s })).
+        with(query: hash_including('date' => date.to_s)).
         to_return(body: response_body.to_json, status: 200, headers: headers)
     end
 

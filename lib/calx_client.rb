@@ -12,7 +12,7 @@ module CalX
     end
 
     def authorize(user_id)
-      post("/app_authorization_requests", user_id: user_id)
+      post('/app_authorization_requests', user_id: user_id)
     end
 
     def events(user_id, params = {})
@@ -67,30 +67,37 @@ module CalX
     def request(uri, request)
       signed_request = ApiAuth.sign!(request, @access_id, @secret_key)
       response = http(uri).request(signed_request)
+      parse_response(response)
+    end
 
+    def parse_response(response)
       case response
       when Net::HTTPNoContent
         :no_content
       when Net::HTTPSuccess
-        if response['Content-Type'].split(';').first == 'application/json'
-          JSON.parse(response.body)
-        else
-          response.body
-        end
+        parse_success_response(response)
       when Net::HTTPUnauthorized
-        raise AuthenticationError, error_response_message(response, uri)
+        raise AuthenticationError.new(error_response_message(response, uri))
       when Net::HTTPClientError
-        raise ClientError, error_response_message(response, uri)
+        raise ClientError.new(error_response_message(response, uri))
       when Net::HTTPServerError
-        raise ServerError, error_response_message(response, uri)
+        raise ServerError.new(error_response_message(response, uri))
       else
-        raise Error, error_response_message(response, uri)
+        raise Error.new(error_response_message(response, uri))
+      end
+    end
+
+    def parse_success_response(response)
+      if response['Content-Type'].split(';').first == 'application/json'
+        JSON.parse(response.body)
+      else
+        response.body
       end
     end
 
     def error_response_message(response, uri)
       message = "#{response.code} response from #{uri.host}"
-      message += " | Response body: #{JSON.parse(response.body)}" if response.body.present?
+      message + " | Response body: #{JSON.parse(response.body)}" if response.body.present?
     end
 
     def http(uri)
@@ -100,7 +107,7 @@ module CalX
     end
 
     def host(options = {})
-      (options[:host] || 'http://localhost:3000') + "/api/v1"
+      (options[:host] || 'http://localhost:3000') + '/api/v1'
     end
 
     def encode_params(params)
