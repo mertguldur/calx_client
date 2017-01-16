@@ -115,6 +115,20 @@ describe CalX::Client do
     end
   end
 
+  context 'text body' do
+    let(:event_id) { 1 }
+    let(:headers) { { 'Content-Type' => 'application/text' } }
+
+    before do
+      stub_request(:get, "#{host}/events/#{event_id}").
+        to_return(body: 'test', status: 200, headers: headers)
+    end
+
+    it 'returns the text body' do
+      expect(subject.event(event_id)).to eq('test')
+    end
+  end
+
   context 'error cases' do
     let(:event_id) { 1 }
 
